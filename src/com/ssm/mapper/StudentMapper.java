@@ -12,6 +12,7 @@ import com.ssm.vo.StudentScoresVo;
 public interface StudentMapper {
 
 	public void update(Student student);
+	public void updatePhoto(Student student);
 	public StudentScoresVo getScore(int studentid);
 	public void updatePwd(Student student);
 	

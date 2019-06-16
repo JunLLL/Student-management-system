@@ -17,6 +17,10 @@
 		set t.name=#{name},sex=#{sex},birthday=#{birthday},professional=#{professional},c.name=#{course.name}
 		where t.id=#{id}	
 	</update>
+	<update id="updateTeacherPhoto" parameterType="com.ssm.model.Teacher">
+		update teacher set photo=#{photo}
+		where id=#{id}	
+	</update>
 	
 	
 	<!-- 输入一个课程的id,通过该id找到该课程下的所有成绩和一对一对应的学生 -->
@@ -71,6 +75,7 @@
 		<result property="password" column="password"/>
 		<result property="birthday" column="birthday"/>
 		<result property="professional" column="professional"/>
+		<result property="photo" column="photo"/>
 		<association property="course" javaType="com.ssm.model.Course">
 			<id property="id" column="cid"/>
 			<result property="name" column="cname"/>

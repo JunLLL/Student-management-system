@@ -8,6 +8,10 @@
 		update student set name=#{name},sex=#{sex}, clazz=#{clazz},birthday=#{birthday}
 		where id=#{id}
 	</update>
+	<update id="updatePhoto" parameterType="com.ssm.model.Student">
+		update student set photo=#{photo}
+		where id=#{id}
+	</update>
 	
 	<!-- 返回值为学生和成绩的关联查询 
 	<select id="getScore" parameterType="int" resultType="com.ssm.model.Score">

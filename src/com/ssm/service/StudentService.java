@@ -28,6 +28,8 @@ public interface StudentService {
 
 	// 修改学生信息
 	public void update(Student student);
+	// 修改学生照片
+	public void updatePhoto(Student student);
 
 	// 删除学生信息
 	public void delete(int id);

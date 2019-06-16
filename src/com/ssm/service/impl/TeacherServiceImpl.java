@@ -110,6 +110,11 @@ public class TeacherServiceImpl implements TeacherService {
 		}
 	}
 
+	@Override
+	public void updateTeacherPhoto(Teacher teacher) {
+		teacherMapper.updateTeacherPhoto(teacher);
+	}
+
 
 	
 }

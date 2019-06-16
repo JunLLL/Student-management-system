@@ -47,7 +47,7 @@
 										${student.id }
 									</td>
 									<td width="120" rowspan="3" align="center">
-										<img src="<%=basePath%>images/person.png" width="100"
+										<img src="<%=basePath%>Student/getPhotoImage?id=${student.id}" width="100"
 											height="110" />
 									</td>
 								</tr>

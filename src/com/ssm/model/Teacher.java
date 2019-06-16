@@ -13,6 +13,7 @@ public class Teacher implements java.io.Serializable {
 	private String birthday;
 	private String professional;
 	private String password;
+	private String photo;
 	private Set<Course> courses = new HashSet<Course>(0);
 
 	// Constructors
@@ -29,7 +30,7 @@ public class Teacher implements java.io.Serializable {
 
 	/** full constructor */
 	public Teacher(Integer id, Course course, String name, String sex,
-			String birthday, String professional, String password,
+			String birthday, String professional, String password,String photo,
 			Set<Course> courses) {
 		this.id = id;
 		this.course = course;
@@ -39,6 +40,7 @@ public class Teacher implements java.io.Serializable {
 		this.professional = professional;
 		this.password = password;
 		this.courses = courses;
+		this.photo = photo;
 	}
 
 	public Integer getId() {
@@ -102,6 +104,14 @@ public class Teacher implements java.io.Serializable {
 
 	public void setCourses(Set<Course> courses) {
 		this.courses = courses;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
 	}
 
 }

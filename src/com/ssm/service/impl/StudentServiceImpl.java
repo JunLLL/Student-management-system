@@ -60,5 +60,11 @@ public class StudentServiceImpl implements StudentService {
 		return studentMapper.getScore(id);
 	}
 
+	@Override
+	public void updatePhoto(Student student) {
+		studentMapper.updatePhoto(student);
+		
+	}
+
 	
 }

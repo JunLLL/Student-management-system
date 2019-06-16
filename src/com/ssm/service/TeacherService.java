@@ -25,6 +25,9 @@ public interface TeacherService {
 
 	// 修改教师信息
 	public void updateTeacher(Teacher teacher);
+	
+	// 修改教师照片
+	public void updateTeacherPhoto(Teacher teacher);
 
 	// 通过教工号验证是否存在该教师的信�?
 	public boolean checkExist(int id);

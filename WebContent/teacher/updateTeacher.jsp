@@ -6,6 +6,7 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 	<head>
 		<base href="<%=basePath%>">
@@ -18,6 +19,33 @@
 		.infotable th{
 			color: white;
 		}
+		/*上传文件的按钮css美化*/	
+		.file {
+	    position: relative;
+	    display: inline-block;
+	    background: gray;
+	    border: 1px solid #99D3F5;
+	    border-radius: 4px;
+	    padding: 4px 12px;
+	    overflow: hidden;
+	    color: white;
+	    text-decoration: none;
+	    text-indent: 0;
+	    line-height: 20px;
+		}
+		.file input {
+		    position: absolute;
+		    font-size: 100px;
+		    right: 0;
+		    top: 0;
+		    opacity: 0;
+		}
+		.file:hover {
+		    background: #AADFFD;
+		    border-color: #78C3F3;
+		    color: #004974;
+		    text-decoration: none;
+		}
 		</style>
 	</head>
 
@@ -27,7 +55,7 @@
 				<img src="<%=basePath%>images/jiantou.jpg">
 				当前位置：修改个人信息
 			</h2>
-			<form method="post" action="<%=basePath%>Teacher/update">
+			<form method="post" action="<%=basePath%>Teacher/update" enctype="multipart/form-data">
 				<table width="460" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td>
@@ -41,7 +69,12 @@
 											value=${teacher.id } />
 									</td>
 									<td width="120" rowspan="3" align="center">
-										<img src="<%=basePath%>images/person.png" width="100" height="110" />
+										<img src="<%=basePath%>Teacher/getPhotoImage?id=${teacher.id}" width="100" height="110"/>
+										<div style="width: 95px;height: 10px;">
+											<a href="javascript:;" class="file">选择照片
+												<input type="file" name="file" id="file">
+											</a>
+										</div>
 									</td>
 								</tr>
 								<tr>

@@ -6,6 +6,7 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 	<head>
 		<base href="<%=basePath%>">
@@ -45,7 +46,7 @@
 										${teacher.id }
 									</td>
 									<td width="120" rowspan="3" align="center">
-										<img src="<%=basePath%>images/person.png" width="100"
+										<img src="<%=basePath%>Teacher/getPhotoImage?id=${teacher.id}" width="100"
 											height="110" />
 									</td>
 								</tr>

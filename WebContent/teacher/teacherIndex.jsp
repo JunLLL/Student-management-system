@@ -117,7 +117,7 @@ a:active {
 											<a href="logout.jsp">退出系统</a>
 										</div>
 									</td>
-									<script type="text/javascript">
+<script type="text/javascript">
 	$("#change").children().click(function() {
 		var url = $(this).attr("title");
 		$('#show').attr("src", url);

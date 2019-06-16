@@ -14,15 +14,41 @@
 
 		<title>修改个人信息</title>
 
-		<style type="text/css">
-<!--
-.style1 {
-	color: #FFFFFF
-}
-.infotable th{
-	color: white;
-}
--->
+<style type="text/css">
+	
+	.style1 {
+		color: #FFFFFF
+	}
+	.infotable th{
+		color: white;
+	}
+	/*上传文件的按钮css美化*/	
+	.file {
+    position: relative;
+    display: inline-block;
+    background: gray;
+    border: 1px solid #99D3F5;
+    border-radius: 4px;
+    padding: 4px 12px;
+    overflow: hidden;
+    color: white;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+	}
+	.file input {
+	    position: absolute;
+	    font-size: 100px;
+	    right: 0;
+	    top: 0;
+	    opacity: 0;
+	}
+	.file:hover {
+	    background: #AADFFD;
+	    border-color: #78C3F3;
+	    color: #004974;
+	    text-decoration: none;
+	}
 </style>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
@@ -34,7 +60,7 @@
 				当前位置：修改个人信息
 			</h2>
 			<c:set var="student" value="${sessionScope.student}" />
-			<form method="post" action="<%=basePath%>Student/update">
+			<form method="post" action="<%=basePath%>Student/update" enctype="multipart/form-data">
 				<table width="460" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td>
@@ -48,7 +74,13 @@
 											value=${student.id } />
 									</td>
 									<td width="120" rowspan="3" align="center">
-										<img src="<%=basePath%>images/person.png" width="100" height="110" />
+										<img src="<%=basePath%>Student/getPhotoImage?id=${student.id}" width="100" height="110"/>
+										<div style="width: 95px;height: 10px;">
+											<a href="javascript:;" class="file">选择照片
+												<input type="file" name="file" id="file">
+											</a>
+												<!-- <input id="file" name="file" type="file" value="选择" style="display: none;" > -->
+										</div>
 									</td>
 								</tr>
 								<tr>

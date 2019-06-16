@@ -13,6 +13,7 @@ public class Student implements java.io.Serializable {
 	private String clazz;
 	private String birthday;
 	private String password;
+	private String photo;
 	
 	private Set<Score> scores = new HashSet<Score>(0);
 
@@ -30,7 +31,7 @@ public class Student implements java.io.Serializable {
 
 	/** full constructor */
 	public Student(Integer id, String name, String sex, String clazz,
-			String birthday, String password, Set<Score> scores) {
+			String birthday, String password,String photo ,Set<Score> scores) {
 		this.id = id;
 		this.name = name;
 		this.sex = sex;
@@ -38,6 +39,7 @@ public class Student implements java.io.Serializable {
 		this.birthday = birthday;
 		this.password = password;
 		this.scores = scores;
+		this.photo = photo;
 	}
 
 	public Integer getId() {
@@ -94,6 +96,14 @@ public class Student implements java.io.Serializable {
 
 	public void setScores(Set<Score> scores) {
 		this.scores = scores;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
 	}
 
 }

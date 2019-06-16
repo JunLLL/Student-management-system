@@ -13,6 +13,7 @@ import com.ssm.vo.ScoresVo;
 public interface TeacherMapper {
 
 	public void updateTeacher(Teacher teacher);
+	public void updateTeacherPhoto(Teacher teacher);
 	public List<ScoresVo> loadScores(@Param("id") Integer id);
 	public Score editStudentScore(@Param("id") Integer id);
 	public void updateStudentScore(Score score);

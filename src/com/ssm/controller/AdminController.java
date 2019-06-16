@@ -29,6 +29,8 @@ public class AdminController {
 		List<Admin> admins=adminService.getAdmin();
 		request.setAttribute("admins", admins);
 		return "behind/adminInfo";
-		
 	}
+	
+	
+	
 }

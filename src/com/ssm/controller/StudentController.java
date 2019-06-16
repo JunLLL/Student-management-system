@@ -1,5 +1,11 @@
 package com.ssm.controller;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -10,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
+import com.ssm.model.Admin;
 import com.ssm.model.Score;
 import com.ssm.model.Student;
 import com.ssm.service.StudentService;
@@ -30,11 +39,36 @@ public class StudentController {
 	}
 
 	@RequestMapping("/update")//springmvc可以自动将from表单中传来的name值与对象属性名相等的值,封装为对象
-	public String update(Student student,HttpServletRequest request,HttpServletResponse response) {
+	public String update(Student student,@RequestParam(value="file") MultipartFile file,HttpServletRequest request,HttpServletResponse response) throws IOException {
 	/*	update student Set name=#{name} password=#{password} sex=#{sex} clazz=#{clazz} birthday=#{birthday}
 		Where id=#{id}*/
+		String message="修改成功";
+		if (file!=null&&file.getSize()>0) {
+			String filename=file.getOriginalFilename();
+			//"image/photo/"+
+			if (filename.endsWith(".png")||filename.endsWith(".jpg")) {
+				InputStream is=file.getInputStream();
+				String photopath="D:/java/student/"+filename;
+				OutputStream os=new FileOutputStream(photopath);
+				
+				byte[] bs=new byte[1024];
+				int len=-1;
+				while((len=is.read(bs))!=-1) {
+					os.write(bs, 0, len);
+				}
+				System.out.println("上传成功,路径为:"+photopath);
+				os.close();
+				is.close();
+				student.setPhoto(photopath);
+				studentService.updatePhoto(student);
+			}else {
+				message="图片仅支持png和jpg格式";
+			}
+		}else {
+			//message="未选中图片";
+		}
 		studentService.update(student);
-		request.getSession().setAttribute("message","修改成功");
+		request.getSession().setAttribute("message",message);
 		request.getSession().setAttribute("url","student/updateStudent.jsp");
 		request.getSession().setAttribute("student",student);
 		
@@ -105,7 +139,24 @@ public class StudentController {
 	}
 	
 	@RequestMapping("/updateStudent")//springmvc可以自动将from表单中传来的name值与对象属性名相等的值,封装为对象
-	public String updateStudent(Student student,HttpServletRequest request) {
+	public String updateStudent(Student student,@RequestParam(value="file") MultipartFile file,HttpServletRequest request) throws IOException {
+	
+		if (file!=null) {
+			InputStream is=file.getInputStream();
+			String filename=file.getOriginalFilename();
+			//"image/photo/"+
+			String photopath="D:\\java\\"+filename;
+			OutputStream os=new FileOutputStream(photopath);
+			
+			byte[] bs=new byte[1024];
+			int len=-1;
+			while((len=is.read(bs))!=-1) {
+				os.write(bs, 0, len);
+			}
+			os.close();
+			is.close();
+			student.setPhoto(photopath);
+		}
 		studentService.update(student);
 		request.getSession().setAttribute("message","修改成功");
 		request.getSession().setAttribute("url","Student/listStudent");
@@ -151,6 +202,26 @@ public class StudentController {
 			request.getSession().setAttribute("url","Student/listStudent");
 		}
 		return "forward:/success.jsp";
+	}
+	
+	@ResponseBody
+	@RequestMapping("getPhotoImage")
+	public void getPhotoImage(@RequestParam int id,HttpServletRequest request,HttpServletResponse response) throws IOException {
+		Student student=studentService.getById(id);
+		String photo=student.getPhoto();
+		
+		if (photo==null) {
+			photo="D:/java/default/person.png";
+		}
+		InputStream is=new FileInputStream(photo);
+		OutputStream os=response.getOutputStream();
+		byte[] bs=new byte[1024];
+		int len=-1;
+		while((len=is.read(bs))!=-1) {
+			os.write(bs, 0, len);
+		}
+		os.close();
+		is.close();
 		
 	}
 }

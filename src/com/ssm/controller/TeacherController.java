@@ -1,5 +1,11 @@
 package com.ssm.controller;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssm.model.Course;
 import com.ssm.model.Score;
@@ -32,11 +40,35 @@ public class TeacherController {
 	}
 
 	@RequestMapping("/update")//springmvc可以自动将from表单中传来的name值与对象属性名相等的值,封装为对象
-	public String update(Teacher teacher,HttpServletRequest request,HttpServletResponse response) {
-	/*	update student Set name=#{name} password=#{password} sex=#{sex} clazz=#{clazz} birthday=#{birthday}
-		Where id=#{id}*/
+	public String update(Teacher teacher,@RequestParam(value="file") MultipartFile file,HttpServletRequest request,HttpServletResponse response) throws IOException {
+		String message="修改成功";
+		if (file!=null&&file.getSize()>0) {
+			String filename=file.getOriginalFilename();
+			//"image/photo/"+
+			if (filename.endsWith(".png")||filename.endsWith(".jpg")) {
+				InputStream is=file.getInputStream();
+				String photopath="D:/java/teacher/"+filename;
+				OutputStream os=new FileOutputStream(photopath);
+				
+				byte[] bs=new byte[1024];
+				int len=-1;
+				while((len=is.read(bs))!=-1) {
+					os.write(bs, 0, len);
+				}
+				System.out.println("上传成功,路径为:"+photopath);
+				os.close();
+				is.close();
+				teacher.setPhoto(photopath);
+				teacherService.updateTeacherPhoto(teacher);
+			}else {
+				message="图片仅支持png和jpg格式";
+			}
+		}else {
+			//message="未选中图片";
+		}
+		
 		teacherService.updateTeacher(teacher);
-		request.getSession().setAttribute("message","修改成功");
+		request.getSession().setAttribute("message",message);
 		request.getSession().setAttribute("url","teacher/updateTeacher.jsp");
 		request.getSession().setAttribute("teacher",teacher);
 		
@@ -193,7 +225,26 @@ public class TeacherController {
 		
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping("getPhotoImage")
+	public void getPhotoImage(@RequestParam int id,HttpServletRequest request,HttpServletResponse response) throws IOException {
+		Teacher teacher=teacherService.getTeacherById(id);
+		String photo=teacher.getPhoto();
+		
+		if (photo==null) {
+			photo="D:/java/default/person.png";
+		}
+		InputStream is=new FileInputStream(photo);
+		OutputStream os=response.getOutputStream();
+		byte[] bs=new byte[1024];
+		int len=-1;
+		while((len=is.read(bs))!=-1) {
+			os.write(bs, 0, len);
+		}
+		os.close();
+		is.close();
+		
+	}
 	
 	
 	
