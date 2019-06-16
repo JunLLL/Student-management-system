@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    					http://www.springframework.org/schema/beans/spring-beans.xsd
+    					http://www.springframework.org/schema/mvc
+    					http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    					http://www.springframework.org/schema/context
+    					http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 将属性文件加载进IOC容器 :通过   PreferencesPlaceholderConfigurer 该实现类有一个locations属性,,为其注入属性文件的路径 -->				
+    <bean name="" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+    	<property name="locations">
+    		<array>
+    			<value>classpath:db.properties</value>
+    		</array>
+    	</property>
+    </bean>
+    
+    <!-- 1.0 datasource,mapper -->			
+    <!-- 1.1 配置datasource,将属性文件中的数据库信息注入该  dbcp连接池中的 BasicDataSource-->
+    <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    	<property name="driverClassName" value="${driver}"></property>
+    	<property name="url" value="${url}"></property>
+    	<property name="username" value="${username}"></property>
+    	<property name="password" value="${password}"></property>
+    </bean>
+    <!-- 1.2 将datasource注入到mybatis-spring整合包中的  SqlSessionFactoryBean中
+    	并且加载mapper.xml映射文件,将其路径注入到SqlSesionFactoryBean中的mapperLocations属性中,*表示多个
+     -->
+    <bean name="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    	<property name="dataSource" ref="dataSource"></property>
+    	<property name="mapperLocations" value="classpath:com/ssm/mapper/*.xml"></property>
+    </bean> 
+	
+	<!-- 交由Spring管理产生mapper接口的动态代理对象  !!!这一步是关键!!!-->
+	<!-- 2.1 将配置好的SqlSessionFactoryBean注入到  Mybatis-Spring整合包中的 MappScannerConfigurer的sqlSessionFactoryBeanName中 
+		将mapper接口的包名注入到  MappScannerConfigurer 的basePackage中,一次性生成多个mapper接口的动态代理对象
+	-->
+	 <bean name="mappers" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+		<property name="basePackage" value="com.ssm.mapper"></property>
+	</bean>
+	 
+	<bean name="loginService" class="com.ssm.service.impl.LoginServiceImpl">
+	<!-- 自动生成的是首字母小写的bean -->
+		<property name="loginMapper" ref="loginMapper"></property>
+	</bean> 
+	<bean name="studentService" class="com.ssm.service.impl.StudentServiceImpl">
+	<!-- 自动生成的是首字母小写的bean -->
+		<property name="studentMapper" ref="studentMapper"></property>
+	</bean> 
+	<bean name="teacherService" class="com.ssm.service.impl.TeacherServiceImpl">
+	<!-- 自动生成的是首字母小写的bean -->
+		<property name="teacherMapper" ref="teacherMapper"></property>
+	</bean> 
+	<bean name="adminService" class="com.ssm.service.impl.AdminServiceImpl">
+	<!-- 自动生成的是首字母小写的bean -->
+		<property name="adminMapper" ref="adminMapper"></property>
+	</bean> 
+</beans>

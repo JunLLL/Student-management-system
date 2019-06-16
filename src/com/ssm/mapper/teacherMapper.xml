@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.TeacherMapper"><!-- namespace直接连接到mapper.java类,将此接口 -->
+	
+	<!-- update teacher t inner join Course c on t.course_id=c.id
+		set t.`name`='李青山1',c.`name`="面向百度程序编程"
+		where t.Id=201 
+	<update id="updateTeacher" parameterType="com.ssm.model.Teacher">
+		update teacher set name=#{name},sex=#{sex},birthday=#{birthday},professional=#{professional}
+		where id=#{id}
+	</update>
+		-->
+	<update id="updateTeacher" parameterType="com.ssm.model.Teacher">
+		update teacher t inner join Course c on t.course_id=c.id
+		set t.name=#{name},sex=#{sex},birthday=#{birthday},professional=#{professional},c.name=#{course.name}
+		where t.id=#{id}	
+	</update>
+	
+	
+	<!-- 输入一个课程的id,通过该id找到该课程下的所有成绩和一对一对应的学生 -->
+	<select id="loadScores" parameterType="int" resultType="com.ssm.vo.ScoresVo">
+		select a.*,b.id studentId,b.name from score a inner join student b on a.student_id=b.id
+		where course_id=#{id}
+	</select>
+	
+	<select id="editStudentScore" parameterType="int" resultMap="Score_Student_Map">
+		select a.id scoid,a.score,b.id stuid,b.name stuname from score a inner join student b on a.student_id=b.id 
+		where a.id=#{id}
+	</select>
+	
+	<resultMap type="com.ssm.model.Score" id="Score_Student_Map">
+		<id property="id" column="scoid"/>
+		<result property="score" column="score"/>
+		<association property="student" javaType="com.ssm.model.Student">
+			<id property="id" column="stuid"/>
+			<result property="name" column="stuname"/>
+		 </association>
+	</resultMap>
+	
+	
+	<update id="updateStudentScore" parameterType="com.ssm.model.Score">
+		update score set score=#{score} where id=#{id}
+	</update>
+	
+	<insert id="addStudentScore" parameterType="com.ssm.model.Score">
+		insert into score values(null,#{student.id},#{course.id},#{score})
+	</insert>
+	
+	<select id="checkScoreOnlyOne" parameterType="com.ssm.model.Score" resultType="com.ssm.model.Score">
+		select id from score 
+		where student_id=#{student.id} and course_id=#{course.id}
+	</select>
+	
+	
+	<select id="getTeachers" resultMap="Teacher_Course_Map">
+		select t.*,c.id cid,c.name cname from teacher t inner join course c on t.course_id=c.id
+	</select>
+	
+	<select id="getTeacherById" parameterType="int" resultMap="Teacher_Course_Map">
+		select t.*,c.id cid,c.name cname from teacher t inner join course c on t.course_id=c.id
+		where t.id=#{id}
+	</select>
+	
+	<!-- 查询教师的所有信息包括其课程编号对应的课程名 -->
+	<resultMap type="com.ssm.model.Teacher" id="Teacher_Course_Map">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="sex" column="sex"/>
+		<result property="password" column="password"/>
+		<result property="birthday" column="birthday"/>
+		<result property="professional" column="professional"/>
+		<association property="course" javaType="com.ssm.model.Course">
+			<id property="id" column="cid"/>
+			<result property="name" column="cname"/>
+		</association>
+	</resultMap>
+	
+	<delete id="deleteTeacher" parameterType="int">
+		delete from teacher where id=#{id}
+	</delete>
+	
+	<update id="updateTeacherPwd" parameterType="com.ssm.model.Teacher">
+		update teacher set password=#{password} where id=#{id}
+	</update>
+	
+	<!-- 需求:要求添加教师时,将教师定义的课程名也添加到课程表中并关联 -->
+	<insert id="addTeacher" parameterType="com.ssm.model.Teacher">
+		insert into teacher(id,name,password,sex,birthday,professional) 
+		values(#{id},#{name},#{password},#{sex},#{birthday},#{professional})
+	</insert>
+	
+	<!-- 返回课程表的最大id,用于添加课程数据时设置id值为最大值加一即可 -->
+	<select id="getCid" resultType="int">
+		select max(id) from course 
+	</select>
+	
+	<!-- 用于插入课程数据并 -->
+	<insert id="saveCourse"  parameterType="com.ssm.model.Course">
+		insert into course values(#{id},#{name},#{teacher.id})
+	</insert>
+	
+	<!-- 更改教师表的外键字段course_id -->
+	<update id="updateCid" parameterType="com.ssm.model.Teacher">
+		update teacher set course_id=#{course.id} where id=#{id}
+	</update>
+</mapper>

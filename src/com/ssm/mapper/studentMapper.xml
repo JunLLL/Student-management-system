@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.StudentMapper"><!-- namespace直接连接到mapper.java类,将此接口 -->
+	
+	<update id="update" parameterType="com.ssm.model.Student">
+		update student set name=#{name},sex=#{sex}, clazz=#{clazz},birthday=#{birthday}
+		where id=#{id}
+	</update>
+	
+	<!-- 返回值为学生和成绩的关联查询 
+	<select id="getScore" parameterType="int" resultType="com.ssm.model.Score">
+		select student,score from score where student_id=#{id}
+	</select>
+	-->
+	<!-- 一对多,一个学生内有多个成绩 -->
+	<!-- select s.*,c.* from student s inner join score c 
+  		on s.id=c.student_id
+  		where s.id=#{id}
+  		 -->
+  <select id="getScore" parameterType="int" resultMap="student_score_course_map">
+  		select a.id stuid,a.name stuname,b.id scoid,b.student_id,
+		b.course_id,b.score,c.id couid,c.name couname
+		from student a left join score b on  a.id=b.student_id left join course c on b.course_id=c.id
+		where a.id=#{id}
+  </select>
+  <resultMap id="student_score_course_map" type="com.ssm.vo.StudentScoresVo">
+  		<!-- 学生信息 一个学生对应多个课程多个成绩,一个课程一个成绩 -->
+  		<id property="id" column="stuid"/>
+  		<result property="name" column="stuname"/>
+  		<!-- 成绩信息,一对多使用collection标签 jdbcType表示属性的类型,ofType表示属性集合内元素的类型-->
+  		<collection property="scores" ofType="com.ssm.model.Score">
+  			<id property="id" column="scoid"/>
+  			<result property="score" column="score"/>	
+  			<!-- <result property="sname" column="sname"/>	 -->
+  			<!-- 还可以接着级联一对一,继续使用association标签 -->
+  			<association property="course" javaType="com.ssm.model.Course">
+  			<!-- 连三张表查询???难为我胖虎嘛这不是 -->
+  				<id property="id" column="couid"/>
+  				<result property="name" column="couname"/>	
+  			</association>
+  		</collection>
+  </resultMap>
+  
+  <update id="updatePwd" parameterType="com.ssm.model.Student">
+		update student set password=#{password}
+		where id=#{id}
+  </update>
+
+
+	<!-- 管理员调用 -->
+	
+	
+  <select id="getStudents" resultType="com.ssm.model.Student">
+  		select * from student
+  </select>
+  
+  <select id="getById"  parameterType="int" resultType="com.ssm.model.Student">
+  		select * from student where id=#{id}
+  </select>
+  
+  <delete id="delete" parameterType="int">
+  		delete from student where id=#{id}
+  </delete>
+  
+  <insert id="addStudent" parameterType="com.ssm.model.Student">
+  		insert into student values(#{id},#{name},#{password},#{sex},#{clazz},#{birthday})
+  </insert>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.LoginMapper"><!-- namespace直接连接到mapper.java类,将此接口 -->
+	
+													
+	<select id="checkStudentLogin" parameterType="com.ssm.model.Student" resultType="com.ssm.model.Student">
+		select * from student where id=#{id} and password=#{password}
+	</select>
+	
+	<select id="checkTeacherLogin" parameterType="com.ssm.model.Teacher" resultMap="Teacher_Course_Map">
+		select t.*,c.id cid,c.name cname from Teacher t join Course c on t.course_id=c.id
+		 where t.id=#{id} and t.password=#{password}
+	</select>
+	<resultMap type="com.ssm.model.Teacher" id="Teacher_Course_Map">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="sex" column="sex"/>
+		<result property="birthday" column="birthday"/>
+		<result property="professional" column="professional"/>
+		
+		<association property="course" javaType="com.ssm.model.Course">
+			<id property="id" column="cid"/>
+			<result property="name" column="cname"/>
+		</association>
+	</resultMap>
+	
+	<select id="checkAdminLogin" parameterType="com.ssm.model.Admin" resultType="com.ssm.model.Admin">
+		select * from Admin where username=#{username} and password=#{password}
+	</select>
+	
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.AdminMapper"><!-- namespace直接连接到mapper.java类,将此接口 -->
+	
+													
+	<select id="getAdmin" parameterType="com.ssm.model.Admin" resultType="com.ssm.model.Admin">
+		select * from Admin 
+	</select>
+	
+</mapper>
